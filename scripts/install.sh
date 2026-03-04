@@ -212,21 +212,32 @@ clone_openclaw() {
 
 install_npm_dependencies() {
   print_step "Installing npm dependencies..."
-  
+
   cd "$INSTALL_DIR"
-  
+
   # Prefer pnpm if available
   if command -v pnpm &> /dev/null; then
     print_info "Using pnpm..."
     pnpm install
   elif command -v npm &> /dev/null; then
     print_info "Using npm..."
-    npm install
+    npm install --no-fund --no-audit 2>&1 | while IFS= read -r line; do
+      # Show package installation progress
+      if [[ "$line" =~ ^npm\ WARN ]]; then
+        echo -e "${YELLOW}$line${NC}"
+      elif [[ "$line" =~ added|removed|changed|audited ]]; then
+        echo -e "${GREEN}$line${NC}"
+      elif [[ "$line" =~ packages ]]; then
+        echo -e "${CYAN}$line${NC}"
+      else
+        echo "$line"
+      fi
+    done
   else
     print_error "No package manager found"
     exit 1
   fi
-  
+
   print_success "Dependencies installed"
 }
 
