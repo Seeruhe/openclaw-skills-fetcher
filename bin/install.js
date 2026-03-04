@@ -58,7 +58,7 @@ function detectOS() {
 // Check command exists
 function commandExists(cmd) {
   try {
-    execSync(platform === 'win32' ? `where ${cmd}` : `which ${cmd}`, { stdio: 'ignore' });
+    execSync(process.platform === 'win32' ? `where ${cmd}` : `which ${cmd}`, { stdio: 'ignore' });
     return true;
   } catch {
     return false;
