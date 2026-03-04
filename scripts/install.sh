@@ -281,32 +281,32 @@ EOF
 
 run_doctor() {
   print_step "Running diagnostics..."
-  
+
   cd "$INSTALL_DIR"
-  
-  if [ -f "dist/cli/index.js" ]; then
-    node dist/cli/index.js doctor --fix 2>/dev/null || true
+
+  if [ -f "openclaw.mjs" ]; then
+    node openclaw.mjs doctor --fix 2>/dev/null || true
   fi
-  
+
   print_success "Diagnostics complete"
 }
 
 start_gateway() {
   print_step "Starting OpenClaw Gateway..."
-  
+
   cd "$INSTALL_DIR"
-  
+
   # Check if already running
   if pgrep -f "openclaw.*gateway" > /dev/null 2>&1; then
     print_warning "Gateway already running"
     return 0
   fi
-  
-  # Start in background
-  if [ -f "dist/gateway/index.js" ]; then
-    nohup node dist/gateway/index.js > /tmp/openclaw-gateway.log 2>&1 &
+
+  # Start in background using openclaw.mjs
+  if [ -f "openclaw.mjs" ]; then
+    nohup node openclaw.mjs gateway > /tmp/openclaw-gateway.log 2>&1 &
     sleep 3
-    
+
     if pgrep -f "openclaw.*gateway" > /dev/null 2>&1; then
       print_success "Gateway started on port 5203"
     else
