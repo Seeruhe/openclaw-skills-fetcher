@@ -148,7 +148,7 @@ function showSuccess() {
   console.log(`${colors.green}║                                                           ║${colors.reset}`);
   console.log(`${colors.green}╚═══════════════════════════════════════════════════════════╝${colors.reset}`);
   console.log('');
-  console.log(`${colors.cyan}🌐 Web UI: http://localhost:5203${colors.reset}`);
+  console.log(`${colors.cyan}🌐 Web UI: http://localhost:18789${colors.reset}`);
   console.log(`${colors.cyan}📚 Docs: https://docs.openclaw.ai${colors.reset}`);
   console.log(`${colors.cyan}📞 Support: https://world.je${colors.reset}`);
   console.log('');

@@ -2,7 +2,7 @@
   "$schema": "https://openclaw.ai/schema/openclaw.json",
   "version": "1.0.0",
   "gateway": {
-    "port": 5203,
+    "port": 18789,
     "host": "127.0.0.1",
     "authToken": ""
   },

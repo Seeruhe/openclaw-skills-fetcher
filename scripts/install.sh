@@ -252,7 +252,7 @@ create_config() {
   "$schema": "https://openclaw.ai/schema/openclaw.json",
   "version": "1.0.0",
   "gateway": {
-    "port": 5203,
+    "port": 18789,
     "host": "127.0.0.1",
     "authToken": ""
   },
@@ -308,7 +308,7 @@ start_gateway() {
     sleep 3
 
     if pgrep -f "openclaw.*gateway" > /dev/null 2>&1; then
-      print_success "Gateway started on port 5203"
+      print_success "Gateway started on port 18789"
     else
       print_warning "Gateway may have failed to start"
       print_info "Check logs: /tmp/openclaw-gateway.log"
@@ -325,7 +325,7 @@ open_browser() {
   
   print_step "Opening browser..."
   
-  URL="http://localhost:5203"
+  URL="http://localhost:18789"
   
   if command -v xdg-open &> /dev/null; then
     xdg-open "$URL" 2>/dev/null &
@@ -352,7 +352,7 @@ print_success_message() {
   echo ""
   echo -e "📍 ${WHITE}Install location:${NC} ${CYAN}$INSTALL_DIR${NC}"
   echo -e "📍 ${WHITE}Config location:${NC}  ${CYAN}$STATE_DIR${NC}"
-  echo -e "🌐 ${WHITE}Web UI:${NC}          ${CYAN}http://localhost:5203${NC}"
+  echo -e "🌐 ${WHITE}Web UI:${NC}          ${CYAN}http://localhost:18789${NC}"
   echo -e "📚 ${WHITE}Documentation:${NC}    ${CYAN}https://docs.openclaw.ai${NC}"
   echo ""
   echo -e "${WHITE}Commands:${NC}"

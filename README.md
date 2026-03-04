@@ -75,7 +75,7 @@ That's it! 🎉
 ## After Install
 
 Access your AI assistant at:
-- **Web UI**: http://localhost:5203
+- **Web UI**: http://localhost:18789
 
 Commands:
 ```bash
