@@ -18,7 +18,7 @@
 ### Option 1: npm (Coming Soon)
 
 ```bash
-~~ npx @worldje/openclaw-installer ~~
+npx @worldje/openclaw-installer
 ```
 
 ### Option 2: GitHub
