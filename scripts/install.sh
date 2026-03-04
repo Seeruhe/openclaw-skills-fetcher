@@ -215,43 +215,26 @@ install_npm_dependencies() {
 
   cd "$INSTALL_DIR"
 
-  # Prefer pnpm if available
-  if command -v pnpm &> /dev/null; then
-    print_info "Using pnpm..."
-    pnpm install
-  elif command -v npm &> /dev/null; then
-    print_info "Using npm..."
-    npm install --no-fund --no-audit 2>&1 | while IFS= read -r line; do
-      # Show package installation progress
-      if [[ "$line" =~ ^npm\ WARN ]]; then
-        echo -e "${YELLOW}$line${NC}"
-      elif [[ "$line" =~ added|removed|changed|audited ]]; then
-        echo -e "${GREEN}$line${NC}"
-      elif [[ "$line" =~ packages ]]; then
-        echo -e "${CYAN}$line${NC}"
-      else
-        echo "$line"
-      fi
-    done
-  else
-    print_error "No package manager found"
-    exit 1
+  # Install pnpm if not available (required by OpenClaw build)
+  if ! command -v pnpm &> /dev/null; then
+    print_info "Installing pnpm..."
+    npm install -g pnpm
   fi
+
+  # Use pnpm (OpenClaw requires pnpm)
+  print_info "Using pnpm..."
+  pnpm install
 
   print_success "Dependencies installed"
 }
 
 build_project() {
   print_step "Building OpenClaw..."
-  
+
   cd "$INSTALL_DIR"
-  
+
   if [ -f "package.json" ] && grep -q '"build"' package.json; then
-    if command -v pnpm &> /dev/null; then
-      pnpm build
-    else
-      npm run build
-    fi
+    pnpm build
     print_success "Build complete"
   else
     print_info "No build step required"
