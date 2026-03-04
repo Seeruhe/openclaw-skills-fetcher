@@ -15,9 +15,16 @@
 
 ## Quick Start
 
+### Option 1: npm (Recommended)
+
 ```bash
-# Install OpenClaw with one command
 npx @worldje/openclaw-installer
+```
+
+### Option 2: GitHub
+
+```bash
+npx github:Seeruhe/openclaw-skills-fetcher
 ```
 
 That's it! 🎉
