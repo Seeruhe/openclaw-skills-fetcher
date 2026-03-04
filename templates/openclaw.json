@@ -1,0 +1,31 @@
+{
+  "$schema": "https://openclaw.ai/schema/openclaw.json",
+  "version": "1.0.0",
+  "gateway": {
+    "port": 5203,
+    "host": "127.0.0.1",
+    "authToken": ""
+  },
+  "channels": {
+    "telegram": {
+      "enabled": false,
+      "token": "",
+      "streaming": "partial"
+    }
+  },
+  "models": {
+    "default": "openai/gpt-4o-mini",
+    "providers": {
+      "openai": {
+        "apiKey": ""
+      },
+      "anthropic": {
+        "apiKey": ""
+      }
+    }
+  },
+  "skills": {
+    "autoUpdate": true,
+    "trustedSources": ["anthropic", "openclaw", "community"]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@worldje/openclaw-installer",
+  "version": "1.0.0",
+  "description": "🚀 OpenClaw one-click installer by world.je - Install OpenClaw automatically with one command",
+  "author": "world.je",
+  "license": "MIT",
+  "homepage": "https://world.je",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/worldje/openclaw-installer"
+  },
+  "bugs": {
+    "url": "https://github.com/worldje/openclaw-installer/issues"
+  },
+  "keywords": [
+    "openclaw",
+    "installer",
+    "ai",
+    "automation",
+    "assistant",
+    "worldje"
+  ],
+  "bin": {
+    "openclaw-installer": "./bin/install.js"
+  },
+  "main": "./bin/install.js",
+  "scripts": {
+    "postinstall": "node bin/welcome.js"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "bin/",
+    "scripts/",
+    "templates/"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": {
+    "type": "website",
+    "url": "https://world.je"
+  }
+}
