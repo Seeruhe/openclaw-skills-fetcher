@@ -283,13 +283,24 @@ create_config() {
         echo ""
         print_info "Configure Telegram Bot"
         echo "Get your bot token from @BotFather on Telegram"
+        echo " (Enter 'skip' to skip this step)"
         echo ""
 
         while true; do
           read -p "Enter Telegram Bot Token: " TELEGRAM_TOKEN
-          if [ -z "$TELEGRAM_TOKEN" ]; then
-            print_warning "Token is empty, skipping Telegram configuration"
+
+          # Check if user wants to skip
+          if [ "$TELEGRAM_TOKEN" = "skip" ] || [ "$TELEGRAM_TOKEN" = "s" ]; then
+            print_info "Skipped Telegram configuration"
+            TELEGRAM_TOKEN=""
             break
+          fi
+
+          # Check if token is empty
+          if [ -z "$TELEGRAM_TOKEN" ]; then
+            print_warning "Token cannot be empty"
+            print_info "Enter a token or type 'skip' to skip"
+            continue
           fi
 
           # Test Telegram token
@@ -311,6 +322,7 @@ create_config() {
             echo ""
             if [ "$TG_RETRY" = "2" ]; then
               print_info "Skipped Telegram configuration"
+              TELEGRAM_TOKEN=""
               break
             fi
           fi
@@ -320,15 +332,34 @@ create_config() {
         echo ""
         print_info "Configure Feishu (Lark)"
         echo "Get your App ID and Secret from Feishu Open Platform"
+        echo " (Enter 'skip' to skip this step)"
         echo ""
 
         while true; do
           read -p "Enter Feishu App ID: " FEISHU_APP_ID
+
+          # Check if user wants to skip
+          if [ "$FEISHU_APP_ID" = "skip" ] || [ "$FEISHU_APP_ID" = "s" ]; then
+            print_info "Skipped Feishu configuration"
+            FEISHU_APP_ID=""
+            FEISHU_APP_SECRET=""
+            break
+          fi
+
+          # Check if App ID is empty
+          if [ -z "$FEISHU_APP_ID" ]; then
+            print_warning "App ID cannot be empty"
+            print_info "Enter credentials or type 'skip' to skip"
+            continue
+          fi
+
           read -p "Enter Feishu App Secret: " FEISHU_APP_SECRET
 
-          if [ -z "$FEISHU_APP_ID" ] || [ -z "$FEISHU_APP_SECRET" ]; then
-            print_warning "Credentials incomplete, skipping Feishu configuration"
-            break
+          # Check if App Secret is empty
+          if [ -z "$FEISHU_APP_SECRET" ]; then
+            print_warning "App Secret cannot be empty"
+            print_info "Enter credentials or type 'skip' to skip"
+            continue
           fi
 
           # Test Feishu credentials
@@ -351,6 +382,8 @@ create_config() {
             echo ""
             if [ "$FEISHU_RETRY" = "2" ]; then
               print_info "Skipped Feishu configuration"
+              FEISHU_APP_ID=""
+              FEISHU_APP_SECRET=""
               break
             fi
           fi
