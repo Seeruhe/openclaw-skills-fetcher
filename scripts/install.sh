@@ -284,8 +284,14 @@ create_config() {
         print_info "Configure Telegram Bot"
         echo "Get your bot token from @BotFather on Telegram"
         echo ""
-        read -p "Enter Telegram Bot Token: " TELEGRAM_TOKEN
-        if [ -n "$TELEGRAM_TOKEN" ]; then
+
+        while true; do
+          read -p "Enter Telegram Bot Token: " TELEGRAM_TOKEN
+          if [ -z "$TELEGRAM_TOKEN" ]; then
+            print_warning "Token is empty, skipping Telegram configuration"
+            break
+          fi
+
           # Test Telegram token
           print_step "Testing Telegram connection..."
           TG_TEST=$(curl -s "https://api.telegram.org/bot${TELEGRAM_TOKEN}/getMe")
@@ -293,22 +299,38 @@ create_config() {
             BOT_NAME=$(echo "$TG_TEST" | grep -o '"username":"[^"]*"' | cut -d'"' -f4)
             print_success "Connected! Bot: @$BOT_NAME"
             TELEGRAM_ENABLED="true"
+            break
           else
             print_error "Token verification failed"
             TG_ERROR=$(echo "$TG_TEST" | grep -o '"description":"[^"]*"' | cut -d'"' -f4)
             [ -n "$TG_ERROR" ] && print_error "$TG_ERROR"
-            print_warning "Token saved anyway, you can verify later"
+            echo ""
+            echo "  1) Retry - Enter token again"
+            echo "  2) Skip - Configure later"
+            read -p "Select [1-2]: " -n 1 -r TG_RETRY
+            echo ""
+            if [ "$TG_RETRY" = "2" ]; then
+              print_info "Skipped Telegram configuration"
+              break
+            fi
           fi
-        fi
+        done
         ;;
       2)
         echo ""
         print_info "Configure Feishu (Lark)"
         echo "Get your App ID and Secret from Feishu Open Platform"
         echo ""
-        read -p "Enter Feishu App ID: " FEISHU_APP_ID
-        read -p "Enter Feishu App Secret: " FEISHU_APP_SECRET
-        if [ -n "$FEISHU_APP_ID" ] && [ -n "$FEISHU_APP_SECRET" ]; then
+
+        while true; do
+          read -p "Enter Feishu App ID: " FEISHU_APP_ID
+          read -p "Enter Feishu App Secret: " FEISHU_APP_SECRET
+
+          if [ -z "$FEISHU_APP_ID" ] || [ -z "$FEISHU_APP_SECRET" ]; then
+            print_warning "Credentials incomplete, skipping Feishu configuration"
+            break
+          fi
+
           # Test Feishu credentials
           print_step "Testing Feishu connection..."
           FEISHU_TEST=$(curl -s -X POST "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal" \
@@ -317,13 +339,22 @@ create_config() {
           if echo "$FEISHU_TEST" | grep -q '"tenant_access_token"'; then
             print_success "Connected! Feishu credentials verified"
             FEISHU_ENABLED="true"
+            break
           else
             print_error "Credential verification failed"
             FEISHU_ERROR=$(echo "$FEISHU_TEST" | grep -o '"msg":"[^"]*"' | cut -d'"' -f4)
             [ -n "$FEISHU_ERROR" ] && print_error "$FEISHU_ERROR"
-            print_warning "Credentials saved anyway, you can verify later"
+            echo ""
+            echo "  1) Retry - Enter credentials again"
+            echo "  2) Skip - Configure later"
+            read -p "Select [1-2]: " -n 1 -r FEISHU_RETRY
+            echo ""
+            if [ "$FEISHU_RETRY" = "2" ]; then
+              print_info "Skipped Feishu configuration"
+              break
+            fi
           fi
-        fi
+        done
         ;;
       3)
         echo ""
