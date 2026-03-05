@@ -28,6 +28,7 @@ STATE_DIR="${STATE_DIR:-$HOME/.openclaw}"
 VERBOSE="${VERBOSE:-false}"
 NO_BROWSER="${NO_BROWSER:-false}"
 BYPASS_CONFIRM="${BYPASS_CONFIRM:-false}"
+RECONFIGURE="${RECONFIGURE:-false}"
 
 # ============================================================
 # Colors
@@ -246,7 +247,14 @@ create_config() {
 
   mkdir -p "$STATE_DIR"
 
-  if [ ! -f "$STATE_DIR/openclaw.json" ]; then
+  if [ ! -f "$STATE_DIR/openclaw.json" ] || [ "$RECONFIGURE" = "true" ]; then
+    print_warning "Configuration exists, but --reconfigure flag set"
+    print_info "Reconfiguring channels..."
+  else
+    print_info "Configuration already exists"
+    print_info "Use --reconfigure to reconfigure channels"
+    return 0
+  fi
     # Interactive channel configuration
     echo ""
     echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
@@ -453,6 +461,7 @@ show_help() {
   echo "  --no-browser       Don't open browser after install"
   echo "  --verbose          Show verbose output"
   echo "  --yes              Skip confirmation prompts"
+  echo "  --reconfigure      Reconfigure channels even if config exists"
   echo "  --help             Show this help message"
   echo ""
   echo "Examples:"
@@ -491,6 +500,10 @@ main() {
         ;;
       --yes|-y)
         BYPASS_CONFIRM="true"
+        shift
+        ;;
+      --reconfigure)
+        RECONFIGURE="true"
         shift
         ;;
       --help|-h)
