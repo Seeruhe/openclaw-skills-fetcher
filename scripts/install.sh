@@ -349,10 +349,7 @@ create_config() {
   }
 }
 EOF
-    print_success "Created configuration"
-  else
-    print_info "Configuration already exists"
-  fi
+    print_success "Configuration saved"
 }
 
 run_doctor() {
