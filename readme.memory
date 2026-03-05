@@ -1,0 +1,120 @@
+# OpenClaw Skills Fetcher - 开发记录
+
+## 项目概述
+
+将 OpenClaw 一键安装器推送到 GitHub: https://github.com/Seeruhe/openclaw-skills-fetcher.git
+
+## 开发时间线
+
+### 2026-03-05
+
+#### 1. 初始化 Git 仓库并推送
+- 初始化 git 仓库
+- 添加远程仓库 `https://github.com/Seeruhe/openclaw-skills-fetcher.git`
+- 首次提交并推送
+
+#### 2. 添加 GitHub 安装选项到 README
+- README.md 添加 `npx github:Seeruhe/openclaw-skills-fetcher` 安装方式
+- npm 选项标记为 "Coming Soon" 并加删除线
+
+#### 3. 修复 Git 检测 Bug
+- **问题**: `commandExists` 函数使用了未定义的 `platform` 变量
+- **修复**: 改为 `process.platform`
+- **文件**: `bin/install.js`
+
+#### 4. 修复 pnpm 依赖
+- **问题**: OpenClaw build 脚本需要 pnpm，但系统没有安装
+- **修复**: 自动安装 pnpm (`npm install -g pnpm`)
+- **文件**: `scripts/install.sh`
+
+#### 5. 修复入口点
+- **问题**: 脚本使用 `dist/gateway/index.js` 但实际入口是 `openclaw.mjs`
+- **修复**: 改为使用 `node openclaw.mjs gateway`
+- **文件**: `scripts/install.sh`
+
+#### 6. 更新默认端口
+- **问题**: 默认端口从 5203 改为 18789
+- **修复**: 更新所有文件中的端口号
+- **文件**: `scripts/install.sh`, `bin/install.js`, `README.md`, `templates/openclaw.json`
+
+#### 7. 添加交互式频道配置
+- 安装时可选择配置：Telegram、飞书、Discord、WhatsApp
+- 交互式菜单选择
+- **文件**: `scripts/install.sh`
+
+#### 8. 添加 --reconfigure 选项
+- 允许已有安装重新配置频道
+- 用法: `npx github:Seeruhe/openclaw-skills-fetcher --reconfigure`
+
+#### 9. 修复 create_config 语法错误
+- 修复多余的 `else` 语句导致的语法错误
+
+#### 10. 添加 Token 连接测试
+- Telegram: 调用 `getMe` API 验证 token
+- 飞书: 获取 `tenant_access_token` 验证凭证
+- 显示 Bot 名称或错误信息
+
+#### 11. 改进空输入处理
+- 空输入时提示重新输入而不是直接跳过
+- 输入 `skip` 或 `s` 明确跳过
+- 测试失败后可选择重试或跳过
+
+## 文件结构
+
+```
+openclaw-installer-final/
+├── README.md           # 项目说明
+├── SKILL.md            # Skill 定义文件
+├── package.json        # npm 包配置
+├── bin/
+│   ├── install.js      # Node.js 入口脚本
+│   └── welcome.js      # 欢迎脚本
+├── scripts/
+│   ├── install.sh      # Linux/macOS 安装脚本
+│   └── install.ps1     # Windows 安装脚本
+├── templates/
+│   ├── README.md       # 模板 README
+│   └── openclaw.json   # 默认配置模板
+└── readme.memory       # 本开发记录
+```
+
+## 使用方式
+
+### 从 GitHub 安装（推荐）
+```bash
+npx github:Seeruhe/openclaw-skills-fetcher
+```
+
+### 重新配置频道
+```bash
+npx github:Seeruhe/openclaw-skills-fetcher --reconfigure
+```
+
+### 安装后访问
+- Web UI: http://localhost:18789
+- 命令: `openclaw status`, `openclaw gateway start`, `openclaw doctor`
+
+## Git 提交记录
+
+| 提交 | 描述 |
+|------|------|
+| f204ded | Initial commit: OpenClaw Skills Fetcher |
+| 52db9c2 | docs: add GitHub installation option |
+| ea02673 | docs: mark npm option as coming soon |
+| 73545ad | fix: use process.platform instead of undefined variable |
+| 23e71cf | feat: improve npm install progress display |
+| 2a5a9ac | fix: auto-install pnpm |
+| 52da606 | fix: use openclaw.mjs as correct entry point |
+| 821a621 | fix: update default gateway port to 18789 |
+| a9c1434 | feat: add interactive channel configuration |
+| f90a8bb | feat: add --reconfigure option |
+| 94c346e | fix: correct syntax error in create_config |
+| dd4ff8a | feat: add token connection test |
+| 0b19b0a | feat: add retry/skip option after token test failure |
+| d4b087b | fix: prompt retry on empty input |
+
+## 注意事项
+
+1. **API Keys 安全**: 所有敏感信息（token、密钥）存储在本地 `~/.openclaw/`，不会推送到 GitHub
+2. **端口**: 默认使用 18789，不是 5203
+3. **pnpm**: OpenClaw 需要 pnpm，脚本会自动安装
