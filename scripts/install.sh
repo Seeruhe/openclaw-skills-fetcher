@@ -243,13 +243,85 @@ build_project() {
 
 create_config() {
   print_step "Creating configuration..."
-  
+
   mkdir -p "$STATE_DIR"
-  
+
   if [ ! -f "$STATE_DIR/openclaw.json" ]; then
-    cat > "$STATE_DIR/openclaw.json" << 'EOF'
+    # Interactive channel configuration
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  📡 Channel Configuration${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+    echo "Which channels do you want to configure? (You can configure later)"
+    echo ""
+    echo "  1) Telegram Bot"
+    echo "  2) Feishu (Lark)"
+    echo "  3) Discord"
+    echo "  4) WhatsApp"
+    echo "  5) Skip - Configure later"
+    echo ""
+    read -p "Select option [1-5]: " -n 1 -r
+    echo ""
+
+    TELEGRAM_ENABLED="false"
+    TELEGRAM_TOKEN=""
+    FEISHU_ENABLED="false"
+    FEISHU_APP_ID=""
+    FEISHU_APP_SECRET=""
+
+    case $REPLY in
+      1)
+        echo ""
+        print_info "Configure Telegram Bot"
+        echo "Get your bot token from @BotFather on Telegram"
+        echo ""
+        read -p "Enter Telegram Bot Token: " TELEGRAM_TOKEN
+        if [ -n "$TELEGRAM_TOKEN" ]; then
+          TELEGRAM_ENABLED="true"
+          print_success "Telegram configured"
+        fi
+        ;;
+      2)
+        echo ""
+        print_info "Configure Feishu (Lark)"
+        echo "Get your App ID and Secret from Feishu Open Platform"
+        echo ""
+        read -p "Enter Feishu App ID: " FEISHU_APP_ID
+        read -p "Enter Feishu App Secret: " FEISHU_APP_SECRET
+        if [ -n "$FEISHU_APP_ID" ] && [ -n "$FEISHU_APP_SECRET" ]; then
+          FEISHU_ENABLED="true"
+          print_success "Feishu configured"
+        fi
+        ;;
+      3)
+        echo ""
+        print_info "Discord configuration will be done via CLI"
+        print_info "Run: openclaw channels login discord"
+        ;;
+      4)
+        echo ""
+        print_info "WhatsApp configuration will be done via CLI"
+        print_info "Run: openclaw channels login whatsapp"
+        ;;
+      5)
+        print_info "Skipped - Configure later with: openclaw configure"
+        ;;
+      *)
+        print_info "Skipped - Configure later with: openclaw configure"
+        ;;
+    esac
+
+    # Build channels config
+    CHANNELS_CONFIG='"telegram": {"enabled": '"$TELEGRAM_ENABLED"', "token": "'"$TELEGRAM_TOKEN"'", "streaming": "partial"}'
+
+    if [ "$FEISHU_ENABLED" = "true" ]; then
+      CHANNELS_CONFIG="$CHANNELS_CONFIG"', "feishu": {"enabled": true, "appId": "'"$FEISHU_APP_ID"'", "appSecret": "'"$FEISHU_APP_SECRET"'"}'
+    fi
+
+    cat > "$STATE_DIR/openclaw.json" << EOF
 {
-  "$schema": "https://openclaw.ai/schema/openclaw.json",
+  "\$schema": "https://openclaw.ai/schema/openclaw.json",
   "version": "1.0.0",
   "gateway": {
     "port": 18789,
@@ -257,11 +329,7 @@ create_config() {
     "authToken": ""
   },
   "channels": {
-    "telegram": {
-      "enabled": false,
-      "token": "",
-      "streaming": "partial"
-    }
+    $CHANNELS_CONFIG
   },
   "models": {
     "default": "openai/gpt-4o-mini",
@@ -273,7 +341,7 @@ create_config() {
   }
 }
 EOF
-    print_success "Created default configuration"
+    print_success "Created configuration"
   else
     print_info "Configuration already exists"
   fi
